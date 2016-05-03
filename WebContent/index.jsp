@@ -19,14 +19,37 @@
 					Engineering</a></li>
 			<li role="presentation"><a href="model.jsp">Model Training</a></li>
 		</ul>
+		<br>
+		<div class="row">
+			<div class="col-md-5">
+				<h3 align="center" style="color: #0066FF">CTR预估</h3>
+				<p class="leading">广告CTR（Click-Through
+					Rate，点击率）预估即通过机器学习等方式对用户点击广告的概率进行预测，以进行广告与用户的最佳匹配，实现广告主、广告联盟、企业与用户的四方共赢。
+				</p>
+			</div>
+			<div class="col-md-5">
+				<h3 align="center" style="color: #0066FF">Apache Spark</h3>
+				<p class="leading">Apache Spark是UC Berkeley开发的并行计算框架，但与Hadoop
+					MapReduce不同的是，Spark使用弹性分布式数据集(RDD)将数据保存在内存中，而不需要再去读写HDFS，节省了硬盘传输的开销。因此，Spark更适用于需要不断迭代的机器学习算法，速度可以达到Hadoop的100倍。
+				</p>
 
-
-
-
-
-
-
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-5">
+				<h3 align="center" style="color: #0066FF">使用算法</h3>
+				<p class="leading">Factorization Machine: 加入关联特征项，更适合CTR预估的应用场景
+				</p>
+			</div>
+			<div class="col-md-5">
+				<h3 align="center" style="color: #0066FF">研究工作</h3>
+				<p class="leading">特征工程与数据预处理</p>
+			</div>
+		</div>
 	</div>
+
+
+
 	<script src="js/jquery-1.12.3.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 </body>
