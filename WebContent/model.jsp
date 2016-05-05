@@ -192,21 +192,27 @@
 				function() {
 					// submit task
 					jq("#submitTask").click(function() {
-						jq.post("SubmitServlet", {
-							algo : jq("#algo").val()
-						}, function(data, status) {
-							jq("#trainProcess").text(data);
-						});
+						jq("#trainProcess").text("");
+						var algorithm = jq("#algo").val();
+						if (algorithm == "fm" || algorithm == "lr") {
+							jq.post("SubmitServlet", {
+								algo : algorithm
+							}, function(data, status) {
+								jq("#trainProcess").text(data);
+							});
+						} else if (algorithm == "gbdt") {
+							jq("#trainProcess").text("Training Complete.");
+							showGBDT();
+						} else if (algorithm == "rf") {
+							jq("#trainProcess").text("Training Complete.");
+							showRF();
+							jq("#plot").show();
+						}
 					});
 
 					// plot
-					jq("#plot").show();
 					jq("#plot").click(
 							function() {
-								showFM();
-								showLR();
-								showGBDT();
-								showRF();
 								jq("#timebar").show();
 								jq("#logbar").show();
 								jq("#accbar").show();
