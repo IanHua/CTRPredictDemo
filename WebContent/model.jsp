@@ -24,33 +24,42 @@
 		<div>
 			<form class="form-inline">
 				<div class="form-group">
-					<label id="data">选择数据文件</label> &nbsp;&nbsp;<input type="file"
-						class="form-control" id="file" name="选择文件">
+					<label>选择训练数据集</label> &nbsp;&nbsp;<input type="file"
+						class="form-control" id="train">
 				</div>
 				&nbsp;&nbsp;
 				<div class="form-group">
-					<label id="algo">选择算法</label> &nbsp;&nbsp; <select
+					<label>选择测试数据集</label> &nbsp;&nbsp;<input type="file"
+						class="form-control" id="test">
+				</div>
+			</form>
+			<br>
+			<form class="form-inline">
+				<div class="form-group">
+					<label>选择算法</label> &nbsp;&nbsp; <select id="algo"
 						class="form-control">
-						<option>Factorization Machine</option>
-						<option>Logistic Regression</option>
-						<option>Gradient Boosting Decision Tree</option>
-						<option>Random Forest</option>
+						<option value="fm">Factorization Machine</option>
+						<option value="lr">Logistic Regression</option>
+						<option value="gbdt">Gradient Boosting Decision Tree</option>
+						<option value="rf">Random Forest</option>
 					</select>
 				</div>
 				&nbsp;&nbsp;
-				<button type="button" class="btn btn-default">提交任务</button>
-
-
+				<button id="submitTask" type="button" class="btn btn-default">提交任务</button>
 			</form>
+
 		</div>
 		<br>
 		<div>
 			<h4>训练状态</h4>
 			<hr>
-			<div class="jumbotron">Training...</div>
+			<div id="trainProcess" class="jumbotron">Training...</div>
 		</div>
 		<div>
-			<h4>训练结果</h4>
+			<h4>
+				训练结果&nbsp;&nbsp;&nbsp;
+				<button id="plot" class="btn btn-default" style="display: none">绘制对比图</button>
+			</h4>
 			<hr>
 			<table class="table table-striped">
 				<thead>
@@ -119,16 +128,217 @@
 				</tbody>
 			</table>
 		</div>
-
-
+		<div class="row" align="center">
+			<div id="timebar" class="col-md-6"
+				style="width: 500px; height: 400px; display: none"></div>
+			<div id="logbar" class="col-md-6"
+				style="width: 500px; height: 400px; display: none"></div>
+		</div>
+		<div class="row" align="center">
+			<div id="accbar" class="col-md-6"
+				style="width: 500px; height: 400px; display: none"></div>
+			<div id="prebar" class="col-md-6"
+				style="width: 500px; height: 400px; display: none"></div>
+		</div>
+		<div class="row" align="center">
+			<div id="recbar" class="col-md-6"
+				style="width: 500px; height: 400px; display: none"></div>
+			<div id="aucbar" class="col-md-6"
+				style="width: 500px; height: 400px; display: none"></div>
+		</div>
 	</div>
 	<script src="js/jquery-1.12.3.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
+	<script src="js/echarts.common.min.js"></script>
 	<script>
 		var jq = $.noConflict();
-		jq(document).ready(function() {
+		function showFM() {
+			jq("#fm_time").show();
+			jq("#fm_log").show();
+			jq("#fm_acc").show();
+			jq("#fm_pre").show();
+			jq("#fm_rec").show();
+			jq("#fm_auc").show();
+			jq("#fm_roc").show();
+		}
+		function showLR() {
+			jq("#lr_time").show();
+			jq("#lr_log").show();
+			jq("#lr_acc").show();
+			jq("#lr_pre").show();
+			jq("#lr_rec").show();
+			jq("#lr_auc").show();
+			jq("#lr_roc").show();
+		}
+		function showGBDT() {
+			jq("#gbdt_time").show();
+			jq("#gbdt_log").show();
+			jq("#gbdt_acc").show();
+			jq("#gbdt_pre").show();
+			jq("#gbdt_rec").show();
+			jq("#gbdt_auc").show();
+			jq("#gbdt_roc").show();
+		}
+		function showRF() {
+			jq("#rf_time").show();
+			jq("#rf_log").show();
+			jq("#rf_acc").show();
+			jq("#rf_pre").show();
+			jq("#rf_rec").show();
+			jq("#rf_auc").show();
+			jq("#rf_roc").show();
+		}
+		jq(document).ready(
+				function() {
+					// submit task
+					jq("#submitTask").click(function() {
+						jq.post("SubmitServlet", {
+							algo : jq("#algo").val()
+						}, function(data, status) {
+							jq("#trainProcess").text(data);
+						});
+					});
 
-		});
+					// plot
+					jq("#plot").show();
+					jq("#plot").click(
+							function() {
+								jq("#timebar").show();
+								jq("#logbar").show();
+								jq("#accbar").show();
+								jq("#prebar").show();
+								jq("#recbar").show();
+								jq("#aucbar").show();
+								// timebar
+								var timechart = echarts.init(document
+										.getElementById('timebar'));
+								var option = {
+									title : {
+										text : 'Training Time'
+									},
+									yAxis : {},
+									xAxis : {
+										data : [ "FM", "LR", "GBDT", "RF" ]
+									},
+									color : [ '#61a0a8' ],
+									series : [ {
+										name : "time",
+										type : 'bar',
+										data : [ jq("#fm_time").text(),
+												jq("#lr_time").text(),
+												jq("#gbdt_time").text(),
+												jq("#rf_time").text() ]
+									} ]
+								};
+								timechart.setOption(option);
+								// logbar
+								var logchart = echarts.init(document
+										.getElementById('logbar'));
+								var option = {
+									title : {
+										text : 'Log Loss'
+									},
+									yAxis : {},
+									xAxis : {
+										data : [ "FM", "LR", "GBDT", "RF" ]
+									},
+									color : [ '#61a0a8' ],
+									series : [ {
+										type : 'bar',
+										data : [ jq("#fm_log").text(),
+												jq("#lr_log").text(),
+												jq("#gbdt_log").text(),
+												jq("#rf_log").text() ]
+									} ]
+								};
+								logchart.setOption(option);
+								// accbar
+								var accchart = echarts.init(document
+										.getElementById('accbar'));
+								var option = {
+									title : {
+										text : 'Accuracy'
+									},
+									yAxis : {},
+									xAxis : {
+										data : [ "FM", "LR", "GBDT", "RF" ]
+									},
+									color : [ '#61a0a8' ],
+									series : [ {
+										type : 'bar',
+										data : [ jq("#fm_acc").text(),
+												jq("#lr_acc").text(),
+												jq("#gbdt_acc").text(),
+												jq("#rf_acc").text() ]
+									} ]
+								};
+								accchart.setOption(option);
+								// prebar
+								var prechart = echarts.init(document
+										.getElementById('prebar'));
+								var option = {
+									title : {
+										text : 'Precision'
+									},
+									yAxis : {},
+									xAxis : {
+										data : [ "FM", "LR", "GBDT", "RF" ]
+									},
+									color : [ '#61a0a8' ],
+									series : [ {
+										type : 'bar',
+										data : [ jq("#fm_pre").text(),
+												jq("#lr_pre").text(),
+												jq("#gbdt_pre").text(),
+												jq("#rf_pre").text() ]
+									} ]
+								};
+								prechart.setOption(option);
+								// recbar
+								var recchart = echarts.init(document
+										.getElementById('recbar'));
+								var option = {
+									title : {
+										text : 'Recall'
+									},
+									yAxis : {},
+									xAxis : {
+										data : [ "FM", "LR", "GBDT", "RF" ]
+									},
+									color : [ '#61a0a8' ],
+									series : [ {
+										type : 'bar',
+										data : [ jq("#fm_rec").text(),
+												jq("#lr_rec").text(),
+												jq("#gbdt_rec").text(),
+												jq("#rf_rec").text() ]
+									} ]
+								};
+								recchart.setOption(option);
+								// aucbar
+								var aucchart = echarts.init(document
+										.getElementById('aucbar'));
+								var option = {
+									title : {
+										text : 'Accuracy'
+									},
+									yAxis : {},
+									xAxis : {
+										data : [ "FM", "LR", "GBDT", "RF" ]
+									},
+									color : [ '#61a0a8' ],
+									series : [ {
+										type : 'bar',
+										data : [ jq("#fm_auc").text(),
+												jq("#lr_auc").text(),
+												jq("#gbdt_auc").text(),
+												jq("#rf_auc").text() ]
+									} ]
+								};
+								aucchart.setOption(option);
+							});
+
+				});
 	</script>
 </body>
 </html>
