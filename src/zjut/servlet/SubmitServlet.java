@@ -46,11 +46,16 @@ public class SubmitServlet extends HttpServlet {
 		String algo = request.getParameter("algo");
 		PrintWriter out = response.getWriter();
 		if (algo.equals("fm")) {
-			out.print("Start training fm");
+			out.print("Start training fm.");
 
-		}
-		else{
-			out.print("Submit Failed.");
+		} else if (algo.equals("lr")) {
+
+		} else if (algo.equals("gbdt")) {
+
+		} else if (algo.equals("rf")) {
+
+		} else {
+			out.print("Please Select Algorithm.");
 		}
 
 		out.flush();

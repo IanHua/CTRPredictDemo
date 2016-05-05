@@ -53,7 +53,7 @@
 		<div>
 			<h4>训练状态</h4>
 			<hr>
-			<div id="trainProcess" class="jumbotron">Training...</div>
+			<div id="trainProcess" class="jumbotron" style="height: 300px"></div>
 		</div>
 		<div>
 			<h4>
@@ -203,6 +203,10 @@
 					jq("#plot").show();
 					jq("#plot").click(
 							function() {
+								showFM();
+								showLR();
+								showGBDT();
+								showRF();
 								jq("#timebar").show();
 								jq("#logbar").show();
 								jq("#accbar").show();
@@ -238,7 +242,10 @@
 									title : {
 										text : 'Log Loss'
 									},
-									yAxis : {},
+									yAxis : {
+										min : 0.6,
+										max : 0.63
+									},
 									xAxis : {
 										data : [ "FM", "LR", "GBDT", "RF" ]
 									},
@@ -259,7 +266,10 @@
 									title : {
 										text : 'Accuracy'
 									},
-									yAxis : {},
+									yAxis : {
+										min : 0.65,
+										max : 0.68
+									},
 									xAxis : {
 										data : [ "FM", "LR", "GBDT", "RF" ]
 									},
@@ -280,7 +290,10 @@
 									title : {
 										text : 'Precision'
 									},
-									yAxis : {},
+									yAxis : {
+										min : 0.65,
+										max : 0.68
+									},
 									xAxis : {
 										data : [ "FM", "LR", "GBDT", "RF" ]
 									},
@@ -301,7 +314,10 @@
 									title : {
 										text : 'Recall'
 									},
-									yAxis : {},
+									yAxis : {
+										min : 0.55,
+										max : 0.75
+									},
 									xAxis : {
 										data : [ "FM", "LR", "GBDT", "RF" ]
 									},
@@ -320,9 +336,12 @@
 										.getElementById('aucbar'));
 								var option = {
 									title : {
-										text : 'Accuracy'
+										text : 'AUC'
 									},
-									yAxis : {},
+									yAxis : {
+										min : 0.71,
+										max : 0.74
+									},
 									xAxis : {
 										data : [ "FM", "LR", "GBDT", "RF" ]
 									},
