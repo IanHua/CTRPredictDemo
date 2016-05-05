@@ -194,12 +194,24 @@
 					jq("#submitTask").click(function() {
 						jq("#trainProcess").text("");
 						var algorithm = jq("#algo").val();
-						if (algorithm == "fm" || algorithm == "lr") {
+						if (algorithm == "fm") {
 							jq.post("SubmitServlet", {
 								algo : algorithm
 							}, function(data, status) {
 								jq("#trainProcess").text(data);
 							});
+
+							showFM();
+						} else if (algorithm == "lr") {
+
+							jq.post("SubmitServlet", {
+								algo : algorithm
+							}, function(data, status) {
+								jq("#trainProcess").text(data);
+							});
+
+							showLR();
+
 						} else if (algorithm == "gbdt") {
 							jq("#trainProcess").text("Training Complete.");
 							showGBDT();
