@@ -51,9 +51,13 @@
 		</div>
 		<br>
 		<div>
-			<h4>训练状态</h4>
+			<h4>
+				训练状态&nbsp;&nbsp;&nbsp;
+				<button id="plot" class="btn btn-default">训练过程</button>
+			</h4>
 			<hr>
-			<div id="trainProcess" class="jumbotron" style="height: 300px"></div>
+			<div id="trainProcess" class="jumbotron"
+				style="height: 100px; overflow: auto; overflow-style: scrollbar"></div>
 		</div>
 		<div>
 			<h4>
@@ -188,194 +192,274 @@
 			jq("#rf_auc").show();
 			jq("#rf_roc").show();
 		}
-		jq(document).ready(
-				function() {
-					// submit task
-					jq("#submitTask").click(function() {
-						jq("#trainProcess").text("");
-						var algorithm = jq("#algo").val();
-						if (algorithm == "fm") {
-							jq.post("SubmitServlet", {
-								algo : algorithm
-							}, function(data, status) {
-								jq("#trainProcess").text(data);
-							});
+		jq(document)
+				.ready(
+						function() {
+							// submit task
+							jq("#submitTask")
+									.click(
+											function() {
+												jq("#trainProcess").text("");
+												var algorithm = jq("#algo")
+														.val();
+												if (algorithm == "fm") {
+													jq("#trainProcess")
+															.html(
+																	"Start Training Factorization Machine.<br>");
+													jq
+															.post(
+																	"SubmitServlet",
+																	{
+																		algo : algorithm
+																	},
+																	function(
+																			data,
+																			status) {
+																		jq(
+																				"#trainProcess")
+																				.html(
+																						jq(
+																								"#trainProcess")
+																								.html()
+																								+ data);
+																	});
 
-							showFM();
-						} else if (algorithm == "lr") {
+													showFM();
+												} else if (algorithm == "lr") {
+													jq("#trainProcess")
+															.html(
+																	"Start Training Logistic Regression.<br>");
+													jq
+															.post(
+																	"SubmitServlet",
+																	{
+																		algo : algorithm
+																	},
+																	function(
+																			data,
+																			status) {
+																		jq(
+																				"#trainProcess")
+																				.html(
+																						jq(
+																								"#trainProcess")
+																								.html()
+																								+ data);
+																	});
 
-							jq.post("SubmitServlet", {
-								algo : algorithm
-							}, function(data, status) {
-								jq("#trainProcess").text(data);
-							});
+													showLR();
 
-							showLR();
+												} else if (algorithm == "gbdt") {
+													jq("#trainProcess")
+															.html(
+																	"Start Training Gradient Boosting Decision Tree.<br>Training Complete.");
+													showGBDT();
+												} else if (algorithm == "rf") {
+													jq("#trainProcess")
+															.html(
+																	"Start Training Random Forest.<br>Training Complete.");
+													showRF();
+													jq("#plot").show();
+												}
+											});
 
-						} else if (algorithm == "gbdt") {
-							jq("#trainProcess").text("Training Complete.");
-							showGBDT();
-						} else if (algorithm == "rf") {
-							jq("#trainProcess").text("Training Complete.");
-							showRF();
-							jq("#plot").show();
-						}
-					});
+							// plot
+							jq("#plot")
+									.click(
+											function() {
+												jq("#timebar").show();
+												jq("#logbar").show();
+												jq("#accbar").show();
+												jq("#prebar").show();
+												jq("#recbar").show();
+												jq("#aucbar").show();
+												// timebar
+												var timechart = echarts
+														.init(document
+																.getElementById('timebar'));
+												var option = {
+													title : {
+														text : 'Training Time'
+													},
+													yAxis : {},
+													xAxis : {
+														data : [ "FM", "LR",
+																"GBDT", "RF" ]
+													},
+													color : [ '#61a0a8' ],
+													series : [ {
+														name : "time",
+														type : 'bar',
+														data : [
+																jq("#fm_time")
+																		.text(),
+																jq("#lr_time")
+																		.text(),
+																jq("#gbdt_time")
+																		.text(),
+																jq("#rf_time")
+																		.text() ]
+													} ]
+												};
+												timechart.setOption(option);
+												// logbar
+												var logchart = echarts
+														.init(document
+																.getElementById('logbar'));
+												var option = {
+													title : {
+														text : 'Log Loss'
+													},
+													yAxis : {
+														min : 0.6,
+														max : 0.63
+													},
+													xAxis : {
+														data : [ "FM", "LR",
+																"GBDT", "RF" ]
+													},
+													color : [ '#61a0a8' ],
+													series : [ {
+														type : 'bar',
+														data : [
+																jq("#fm_log")
+																		.text(),
+																jq("#lr_log")
+																		.text(),
+																jq("#gbdt_log")
+																		.text(),
+																jq("#rf_log")
+																		.text() ]
+													} ]
+												};
+												logchart.setOption(option);
+												// accbar
+												var accchart = echarts
+														.init(document
+																.getElementById('accbar'));
+												var option = {
+													title : {
+														text : 'Accuracy'
+													},
+													yAxis : {
+														min : 0.65,
+														max : 0.68
+													},
+													xAxis : {
+														data : [ "FM", "LR",
+																"GBDT", "RF" ]
+													},
+													color : [ '#61a0a8' ],
+													series : [ {
+														type : 'bar',
+														data : [
+																jq("#fm_acc")
+																		.text(),
+																jq("#lr_acc")
+																		.text(),
+																jq("#gbdt_acc")
+																		.text(),
+																jq("#rf_acc")
+																		.text() ]
+													} ]
+												};
+												accchart.setOption(option);
+												// prebar
+												var prechart = echarts
+														.init(document
+																.getElementById('prebar'));
+												var option = {
+													title : {
+														text : 'Precision'
+													},
+													yAxis : {
+														min : 0.65,
+														max : 0.68
+													},
+													xAxis : {
+														data : [ "FM", "LR",
+																"GBDT", "RF" ]
+													},
+													color : [ '#61a0a8' ],
+													series : [ {
+														type : 'bar',
+														data : [
+																jq("#fm_pre")
+																		.text(),
+																jq("#lr_pre")
+																		.text(),
+																jq("#gbdt_pre")
+																		.text(),
+																jq("#rf_pre")
+																		.text() ]
+													} ]
+												};
+												prechart.setOption(option);
+												// recbar
+												var recchart = echarts
+														.init(document
+																.getElementById('recbar'));
+												var option = {
+													title : {
+														text : 'Recall'
+													},
+													yAxis : {
+														min : 0.55,
+														max : 0.75
+													},
+													xAxis : {
+														data : [ "FM", "LR",
+																"GBDT", "RF" ]
+													},
+													color : [ '#61a0a8' ],
+													series : [ {
+														type : 'bar',
+														data : [
+																jq("#fm_rec")
+																		.text(),
+																jq("#lr_rec")
+																		.text(),
+																jq("#gbdt_rec")
+																		.text(),
+																jq("#rf_rec")
+																		.text() ]
+													} ]
+												};
+												recchart.setOption(option);
+												// aucbar
+												var aucchart = echarts
+														.init(document
+																.getElementById('aucbar'));
+												var option = {
+													title : {
+														text : 'AUC'
+													},
+													yAxis : {
+														min : 0.71,
+														max : 0.74
+													},
+													xAxis : {
+														data : [ "FM", "LR",
+																"GBDT", "RF" ]
+													},
+													color : [ '#61a0a8' ],
+													series : [ {
+														type : 'bar',
+														data : [
+																jq("#fm_auc")
+																		.text(),
+																jq("#lr_auc")
+																		.text(),
+																jq("#gbdt_auc")
+																		.text(),
+																jq("#rf_auc")
+																		.text() ]
+													} ]
+												};
+												aucchart.setOption(option);
+											});
 
-					// plot
-					jq("#plot").click(
-							function() {
-								jq("#timebar").show();
-								jq("#logbar").show();
-								jq("#accbar").show();
-								jq("#prebar").show();
-								jq("#recbar").show();
-								jq("#aucbar").show();
-								// timebar
-								var timechart = echarts.init(document
-										.getElementById('timebar'));
-								var option = {
-									title : {
-										text : 'Training Time'
-									},
-									yAxis : {},
-									xAxis : {
-										data : [ "FM", "LR", "GBDT", "RF" ]
-									},
-									color : [ '#61a0a8' ],
-									series : [ {
-										name : "time",
-										type : 'bar',
-										data : [ jq("#fm_time").text(),
-												jq("#lr_time").text(),
-												jq("#gbdt_time").text(),
-												jq("#rf_time").text() ]
-									} ]
-								};
-								timechart.setOption(option);
-								// logbar
-								var logchart = echarts.init(document
-										.getElementById('logbar'));
-								var option = {
-									title : {
-										text : 'Log Loss'
-									},
-									yAxis : {
-										min : 0.6,
-										max : 0.63
-									},
-									xAxis : {
-										data : [ "FM", "LR", "GBDT", "RF" ]
-									},
-									color : [ '#61a0a8' ],
-									series : [ {
-										type : 'bar',
-										data : [ jq("#fm_log").text(),
-												jq("#lr_log").text(),
-												jq("#gbdt_log").text(),
-												jq("#rf_log").text() ]
-									} ]
-								};
-								logchart.setOption(option);
-								// accbar
-								var accchart = echarts.init(document
-										.getElementById('accbar'));
-								var option = {
-									title : {
-										text : 'Accuracy'
-									},
-									yAxis : {
-										min : 0.65,
-										max : 0.68
-									},
-									xAxis : {
-										data : [ "FM", "LR", "GBDT", "RF" ]
-									},
-									color : [ '#61a0a8' ],
-									series : [ {
-										type : 'bar',
-										data : [ jq("#fm_acc").text(),
-												jq("#lr_acc").text(),
-												jq("#gbdt_acc").text(),
-												jq("#rf_acc").text() ]
-									} ]
-								};
-								accchart.setOption(option);
-								// prebar
-								var prechart = echarts.init(document
-										.getElementById('prebar'));
-								var option = {
-									title : {
-										text : 'Precision'
-									},
-									yAxis : {
-										min : 0.65,
-										max : 0.68
-									},
-									xAxis : {
-										data : [ "FM", "LR", "GBDT", "RF" ]
-									},
-									color : [ '#61a0a8' ],
-									series : [ {
-										type : 'bar',
-										data : [ jq("#fm_pre").text(),
-												jq("#lr_pre").text(),
-												jq("#gbdt_pre").text(),
-												jq("#rf_pre").text() ]
-									} ]
-								};
-								prechart.setOption(option);
-								// recbar
-								var recchart = echarts.init(document
-										.getElementById('recbar'));
-								var option = {
-									title : {
-										text : 'Recall'
-									},
-									yAxis : {
-										min : 0.55,
-										max : 0.75
-									},
-									xAxis : {
-										data : [ "FM", "LR", "GBDT", "RF" ]
-									},
-									color : [ '#61a0a8' ],
-									series : [ {
-										type : 'bar',
-										data : [ jq("#fm_rec").text(),
-												jq("#lr_rec").text(),
-												jq("#gbdt_rec").text(),
-												jq("#rf_rec").text() ]
-									} ]
-								};
-								recchart.setOption(option);
-								// aucbar
-								var aucchart = echarts.init(document
-										.getElementById('aucbar'));
-								var option = {
-									title : {
-										text : 'AUC'
-									},
-									yAxis : {
-										min : 0.71,
-										max : 0.74
-									},
-									xAxis : {
-										data : [ "FM", "LR", "GBDT", "RF" ]
-									},
-									color : [ '#61a0a8' ],
-									series : [ {
-										type : 'bar',
-										data : [ jq("#fm_auc").text(),
-												jq("#lr_auc").text(),
-												jq("#gbdt_auc").text(),
-												jq("#rf_auc").text() ]
-									} ]
-								};
-								aucchart.setOption(option);
-							});
-
-				});
+						});
 	</script>
 </body>
 </html>

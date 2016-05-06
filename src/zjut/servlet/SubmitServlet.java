@@ -1,6 +1,8 @@
 package zjut.servlet;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
@@ -46,19 +48,28 @@ public class SubmitServlet extends HttpServlet {
 		String algo = request.getParameter("algo");
 		PrintWriter out = response.getWriter();
 		if (algo.equals("fm")) {
-			out.print("Start training fm.");
-
+			try {
+				String path = "/home/ian/Documents/AvazuSpark/test.sh";
+				Process ps = Runtime.getRuntime().exec(path);
+				ps.waitFor();
+				out.println("Training Complete.");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		} else if (algo.equals("lr")) {
-
+			try {
+				String path = "/home/ian/Documents/AvazuSpark/submitLR.sh";
+				Process ps = Runtime.getRuntime().exec(path);
+				ps.waitFor();
+				out.println("Training Complete.");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		} else if (algo.equals("gbdt")) {
 
 		} else if (algo.equals("rf")) {
-			
 
-		} else {
-			out.print("Please Select Algorithm.");
 		}
-
 		out.flush();
 		out.close();
 	}
