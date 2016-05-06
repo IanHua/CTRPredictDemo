@@ -52,17 +52,17 @@
 		<br>
 		<div>
 			<h4>
-				训练状态&nbsp;&nbsp;&nbsp;
-				<button id="plot" class="btn btn-default">训练过程</button>
+				训练状态&nbsp;&nbsp;&nbsp; <a id="spark" href="http://127.0.0.1:4040"
+					target="_blank" class="btn btn-primary" role="button">训练过程</a>
 			</h4>
 			<hr>
 			<div id="trainProcess" class="jumbotron"
-				style="height: 100px; overflow: auto; overflow-style: scrollbar"></div>
+				style="height: 200px; overflow: auto; overflow-style: scrollbar"></div>
 		</div>
 		<div>
 			<h4>
 				训练结果&nbsp;&nbsp;&nbsp;
-				<button id="plot" class="btn btn-default" style="display: none">绘制对比图</button>
+				<button id="plot" class="btn btn-primary" style="display: none">绘制对比图</button>
 			</h4>
 			<hr>
 			<table class="table table-striped">
@@ -222,33 +222,13 @@
 																								"#trainProcess")
 																								.html()
 																								+ data);
+																		showFM();
 																	});
-
-													showFM();
 												} else if (algorithm == "lr") {
 													jq("#trainProcess")
 															.html(
-																	"Start Training Logistic Regression.<br>");
-													jq
-															.post(
-																	"SubmitServlet",
-																	{
-																		algo : algorithm
-																	},
-																	function(
-																			data,
-																			status) {
-																		jq(
-																				"#trainProcess")
-																				.html(
-																						jq(
-																								"#trainProcess")
-																								.html()
-																								+ data);
-																	});
-
+																	"Start Training Logistic Regression.<br>Training Complete.");
 													showLR();
-
 												} else if (algorithm == "gbdt") {
 													jq("#trainProcess")
 															.html(

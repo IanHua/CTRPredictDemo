@@ -49,8 +49,51 @@ public class SubmitServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		if (algo.equals("fm")) {
 			try {
-				String path = "/home/ian/Documents/AvazuSpark/test.sh";
+				String path = "/home/ian/Documents/AvazuSpark/submitFM.sh";
 				Process ps = Runtime.getRuntime().exec(path);
+				BufferedReader br = new BufferedReader(new InputStreamReader(ps.getInputStream()));
+				BufferedReader brError = new BufferedReader(new InputStreamReader(ps.getErrorStream(), "utf-8"));
+				Thread t1 = new Thread() {
+					public void run() {
+						String line = null;
+						try {
+							while ((line = brError.readLine()) != null) {
+								System.out.println(line);
+							}
+						} catch (IOException e) {
+							e.printStackTrace();
+						} finally {
+							try {
+								if (brError != null)
+									brError.close();
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+					}
+				};
+				Thread t2 = new Thread() {
+					public void run() {
+						String line = null;
+						try {
+							while ((line = br.readLine()) != null) {
+								System.out.println(line);
+							}
+						} catch (IOException e) {
+							e.printStackTrace();
+						} finally {
+							try {
+								if (br != null)
+									br.close();
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+					}
+				};
+				t1.start();
+				t2.start();
 				ps.waitFor();
 				out.println("Training Complete.");
 			} catch (Exception e) {
@@ -60,6 +103,49 @@ public class SubmitServlet extends HttpServlet {
 			try {
 				String path = "/home/ian/Documents/AvazuSpark/submitLR.sh";
 				Process ps = Runtime.getRuntime().exec(path);
+				BufferedReader br = new BufferedReader(new InputStreamReader(ps.getInputStream()));
+				BufferedReader brError = new BufferedReader(new InputStreamReader(ps.getErrorStream(), "utf-8"));
+				Thread t1 = new Thread() {
+					public void run() {
+						String line = null;
+						try {
+							while ((line = brError.readLine()) != null) {
+								System.out.println(line);
+							}
+						} catch (IOException e) {
+							e.printStackTrace();
+						} finally {
+							try {
+								if (brError != null)
+									brError.close();
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+					}
+				};
+				Thread t2 = new Thread() {
+					public void run() {
+						String line = null;
+						try {
+							while ((line = br.readLine()) != null) {
+								System.out.println(line);
+							}
+						} catch (IOException e) {
+							e.printStackTrace();
+						} finally {
+							try {
+								if (br != null)
+									br.close();
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+					}
+				};
+				t1.start();
+				t2.start();
 				ps.waitFor();
 				out.println("Training Complete.");
 			} catch (Exception e) {
