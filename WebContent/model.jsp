@@ -205,7 +205,12 @@
 												if (algorithm == "fm") {
 													jq("#trainProcess")
 															.html(
-																	"Start Training Factorization Machine.<br>");
+																	"Start Training Factorization Machine.<br>Training Complete.");
+													showFM();
+												} else if (algorithm == "lr") {
+													jq("#trainProcess")
+															.html(
+																	"Start Training Logistic Regression.<br>");
 													jq
 															.post(
 																	"SubmitServlet",
@@ -222,13 +227,8 @@
 																								"#trainProcess")
 																								.html()
 																								+ data);
-																		showFM();
+																		showLR();
 																	});
-												} else if (algorithm == "lr") {
-													jq("#trainProcess")
-															.html(
-																	"Start Training Logistic Regression.<br>Training Complete.");
-													showLR();
 												} else if (algorithm == "gbdt") {
 													jq("#trainProcess")
 															.html(
