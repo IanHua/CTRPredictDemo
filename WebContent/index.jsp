@@ -11,7 +11,7 @@
 </head>
 <body>
 	<div class="container">
-		<h3>《基于Apache Spark的CTR预估算法研究》演示系统</h3>
+		<h3>《基于Apache Spark的CTR预估算法研究》模型训练系统</h3>
 		<hr>
 		<ul class="nav nav-pills nav-justified">
 			<li role="presentation" class="active"><a href="#">Overview</a></li>
@@ -58,7 +58,7 @@
 				<ul style="font-size: 15px">
 					<li>特征工程与数据预处理</li>
 
-					<li>基于Apache Spark实现以上四种算法(主要是Factorization Machine)</li>
+					<li>基于Apache Spark并行化设计以上四种算法(主要是Factorization Machine)</li>
 
 					<li>模型训练</li>
 

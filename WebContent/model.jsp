@@ -11,7 +11,7 @@
 </head>
 <body>
 	<div class="container">
-		<h3>《基于Apache Spark的CTR预估算法研究》演示系统</h3>
+		<h3>《基于Apache Spark的CTR预估算法研究》模型训练系统</h3>
 		<hr>
 		<ul class="nav nav-pills nav-justified">
 			<li role="presentation"><a href="index.jsp">Overview</a></li>
